@@ -1,0 +1,1114 @@
+{
+  "name": "Upwork Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        272
+      ],
+      "id": "36b66771-a261-4ca8-808a-5b47fc0a4304",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "O9NQ3ZAoIcYs4mTy",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"score\": \"X/10\",\n  \"priority\": \"High | Medium | Low\",\n  \"reason\": \"One short paragraph explaining why\",\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"url\": \"url\",\n  \"relativeDate\": \"relativeDate\",\n  \"jobType\": \"Hourly\",\n  \"experienceLevel\": \"Intermediate\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        288
+      ],
+      "id": "0892af8b-f912-49fa-834e-f89584a44ccb",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analyze this Upwork job opportunity:\n\n**Title:** {{ $json.title }}\n\n**Description:** {{ $json.description }}\n\n**Posted:** {{ $json.relativeDate }}\n**Job Type:** {{ $json.jobType }}\n**Experience Level:** {{ $json.experienceLevel }}\n**URL:** {{ $json.url }}\n\nEvaluate this job for Morgan based on the scoring framework. Output valid JSON only.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an expert Upwork Job Evaluator specialized in scoring opportunities for Morgan, an automation specialist with deep expertise in n8n, AI integrations, workflow automation, voice agents (Twilio/Retell/Vapi), and API systems.\n\n**PRIMARY OBJECTIVES:**\nEvaluate jobs based on Morgan's current strategy:\n✓ Secure quick wins (projects completable in 24-48 hours)\n✓ Build portfolio with high-quality automation work\n✓ Collect 5-star testimonials quickly\n✓ Increase Upwork profile history and JSS\n✓ Avoid scope creep, unclear clients, and time-wasters\n✓ Focus exclusively on: n8n, AI/ML automations, workflow systems, voice agents, CRM integrations, Twilio/Retell/Vapi, API development, chatbots, and webhook integrations\n\n**SCORING FRAMEWORK:**\n\nHIGH PRIORITY (8-10/10):\n- Explicitly mentions: n8n, automation, AI, workflow, voice agent, chatbot, Twilio, Retell, Vapi, API integration, webhook, Make, Zapier\n- Clear, well-defined scope (not vague \"build a platform\")\n- Reasonable budget for time investment\n- Client shows professionalism: clear requirements, verified payment, good history, or well-written post\n- Can be completed in 24-72 hours\n- Strong portfolio-building potential in Morgan's niche\n\nMEDIUM PRIORITY (5-7/10):\n- Automation-adjacent work (e.g., \"workflow optimization\" but unclear if n8n)\n- Longer timeline but still relevant to expertise\n- New client with no history BUT professional job post\n- Lower budget but excellent for testimonials/portfolio\n- Partial match to skills (e.g., general API work, not specifically n8n)\n\nLOW PRIORITY (1-4/10):\n- NOT automation/AI/workflow related (WordPress, graphic design, data entry, general web dev)\n- Vague scope with red flags (\"build everything,\" \"unlimited revisions\")\n- Unprofessional client: poor English, unrealistic expectations, very low rates\n- Requires skills Morgan doesn't offer (mobile app dev, blockchain, game dev)\n- Long-term full-stack development outside core automation niche\n- Geographic restrictions Morgan can't meet\n\n**OUTPUT FORMAT (strict JSON):**\n{\n  \"score\": \"X/10\",\n  \"priority\": \"High|Medium|Low\",\n  \"reason\": \"One concise paragraph (2-4 sentences) explaining the score based on relevance to Morgan's expertise, likelihood of quick completion, client quality signals, and strategic fit for portfolio building.\"\n}\n\n**CRITICAL INSTRUCTIONS:**\n- Be honest and realistic—don't inflate scores\n- Consider client red flags seriously (low budget + vague scope = time waste)\n- Prioritize jobs that showcase Morgan's unique n8n + AI expertise\n- Quick wins > long-term projects for current strategy\n- \"Perfect match\" means: n8n + AI + clear scope + professional client"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        768,
+        32
+      ],
+      "id": "8fb79a0d-9f3c-4ce6-88eb-91a4a18d4ebb",
+      "name": "Analyse Job",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Upwork Automation",
+        "height": 1072,
+        "width": 2864,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -400,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "d31f5ebd-02b7-45d0-86de-deb5f8ebefbf",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        128
+      ],
+      "id": "25dddbb1-edb1-4322-8bb5-c3860360fa1c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "sendTo": "jainapoorv1234@gmail.com",
+        "subject": "=High Priority Job Opportunity - Score:  {{ $json.output.score }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <style>\n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n            line-height: 1.6;\n            color: #333;\n            margin: 0;\n            padding: 0;\n            background-color: #f5f5f5;\n        }\n        .container {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #ffffff;\n        }\n        .header {\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            color: white;\n            padding: 20px 15px;\n            text-align: center;\n        }\n        .header h1 {\n            margin: 0;\n            font-size: 20px;\n            font-weight: 600;\n        }\n        .header p {\n            margin: 8px 0 0 0;\n            font-size: 13px;\n            opacity: 0.95;\n        }\n        .content {\n            padding: 15px;\n        }\n        .alert {\n            background: #e8f5e9;\n            border-left: 3px solid #4caf50;\n            padding: 12px;\n            margin-bottom: 20px;\n            border-radius: 4px;\n            font-size: 14px;\n        }\n        .alert strong {\n            color: #2e7d32;\n        }\n        .section {\n            margin-bottom: 20px;\n        }\n        .section-title {\n            color: #667eea;\n            font-size: 16px;\n            font-weight: 600;\n            margin: 0 0 12px 0;\n            padding-bottom: 8px;\n            border-bottom: 2px solid #667eea;\n            display: flex;\n            align-items: center;\n            gap: 8px;\n        }\n        .field {\n            margin-bottom: 15px;\n        }\n        .field-label {\n            font-weight: 600;\n            color: #666;\n            font-size: 11px;\n            text-transform: uppercase;\n            letter-spacing: 0.5px;\n            margin-bottom: 6px;\n        }\n        .field-value {\n            color: #333;\n            padding: 12px;\n            background: #f8f9fa;\n            border-radius: 6px;\n            font-size: 14px;\n            line-height: 1.6;\n            word-wrap: break-word;\n        }\n        .title-row {\n            display: flex;\n            flex-direction: column;\n            gap: 8px;\n        }\n        .job-title {\n            font-weight: 600;\n            font-size: 16px;\n            color: #1a1a1a;\n        }\n        .badge {\n            display: inline-block;\n            padding: 4px 10px;\n            background: #667eea;\n            color: white;\n            border-radius: 12px;\n            font-size: 11px;\n            font-weight: 600;\n            text-transform: uppercase;\n        }\n        .description {\n            line-height: 1.7;\n            white-space: pre-wrap;\n            word-wrap: break-word;\n        }\n        .reason-box {\n            background: #fff8e1;\n            border-left: 3px solid #ffa726;\n            padding: 12px;\n            border-radius: 4px;\n            margin-top: 20px;\n        }\n        .reason-box h3 {\n            margin: 0 0 8px 0;\n            color: #e65100;\n            font-size: 14px;\n            font-weight: 600;\n        }\n        .reason-box p {\n            margin: 0;\n            font-size: 13px;\n            line-height: 1.6;\n        }\n        .cta-button {\n            display: block;\n            background: #667eea;\n            color: white !important;\n            padding: 14px 20px;\n            text-decoration: none;\n            border-radius: 8px;\n            margin: 20px 0;\n            font-weight: 600;\n            text-align: center;\n            font-size: 15px;\n        }\n        .footer {\n            text-align: center;\n            padding: 20px 15px;\n            background: #f8f9fa;\n            border-top: 1px solid #e0e0e0;\n        }\n        .footer p {\n            margin: 8px 0;\n            color: #666;\n            font-size: 12px;\n            line-height: 1.5;\n        }\n        \n        /* Mobile specific */\n        @media only screen and (max-width: 600px) {\n            .header h1 {\n                font-size: 18px;\n            }\n            .header p {\n                font-size: 12px;\n            }\n            .content {\n                padding: 12px;\n            }\n            .job-title {\n                font-size: 15px;\n            }\n            .field-value {\n                font-size: 13px;\n                padding: 10px;\n            }\n            .cta-button {\n                font-size: 14px;\n                padding: 12px 16px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"header\">\n            <h1>🎯 High Priority Job Match!</h1>\n            <p>New opportunity on Upwork</p>\n        </div>\n        \n        <div class=\"content\">\n            <div class=\"alert\">\n                <strong>✓ Great News!</strong> We've found a high-priority job that aligns with your expertise.\n            </div>\n            \n            <div class=\"section\">\n                <div class=\"section-title\">📋 Job Details</div>\n                \n                <div class=\"field\">\n                    <div class=\"field-label\">Job Title</div>\n                    <div class=\"field-value\">\n                        <div class=\"title-row\">\n                            <span class=\"job-title\">{{ $json.output.title }}</span>\n                            <span class=\"badge\">{{ $json.output.experienceLevel }}</span>\n                        </div>\n                    </div>\n                </div>\n                \n                <div class=\"field\">\n                    <div class=\"field-label\">Description</div>\n                    <div class=\"field-value description\">{{ $json.output.description }}</div>\n                </div>\n                \n                <a href=\"{{ $json.output.url }}\" class=\"cta-button\">📎 View Job on Upwork</a>\n            </div>\n            \n            <div class=\"reason-box\">\n                <h3>💡 Why This Matches</h3>\n                <p>{{ $json.output.reason }}</p>\n            </div>\n        </div>\n        \n        <div class=\"footer\">\n            <p>📊 Saved to your Airtable database</p>\n            <p>Automated job matching notification</p>\n        </div>\n    </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        336
+      ],
+      "id": "65f54e66-622a-48c4-b26b-7b55fb72f5bc",
+      "name": "Send a message",
+      "webhookId": "8afedb85-3474-484b-8294-ce689f8e5d5c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CJxRvkycvRfkcDDp",
+          "name": "Gmail account 2"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3389482f-80dc-4b1a-b2a6-c02272fa6caa",
+              "name": "error",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1952,
+        528
+      ],
+      "id": "eb881674-02d7-4477-900b-a0963a21aae4",
+      "name": "Error in executing mail"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8e89c9b6-a6bc-4829-a059-bbffbad0b0fc",
+              "name": "Error",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1184,
+        -128
+      ],
+      "id": "1b151c88-5b15-4952-8a52-f3a4b30d3122",
+      "name": "Error in executing agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "4234761d-7d58-452a-9cfd-a1afd2ee5941",
+              "leftValue": "={{ $json.experienceLevel }}",
+              "rightValue": "Expert",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "44ed4a52-bb2c-4016-8c93-51b3ee2811c5",
+              "leftValue": "={{ $json.experienceLevel }}",
+              "rightValue": "Intermediate",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "7edd5741-36af-474d-a11c-6dfd6daba87b",
+              "leftValue": "={{ $json.experienceLevel }}",
+              "rightValue": "Beginner",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        368,
+        144
+      ],
+      "id": "f5974383-3792-47a8-8715-8f72b7e12b10",
+      "name": "Filter Experience"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7e847330-ce0e-41c4-ab9e-920eb54111f2",
+              "leftValue": "={{ $json.output.priority }}",
+              "rightValue": "High",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        304
+      ],
+      "id": "15b39abd-587b-4208-a2d6-98dca3ca5501",
+      "name": "Filter Priority"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17650ad5-d633-4a5f-9576-eb874059adc9",
+              "name": "error ",
+              "value": "={{ $json.error.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        336
+      ],
+      "id": "31b4d1aa-6abd-421b-a5be-3b7d13c885f5",
+      "name": "Error in Scraping"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app2YkfB5KfYfAOTr",
+          "mode": "list",
+          "cachedResultName": "Upworks_jobs",
+          "cachedResultUrl": "https://airtable.com/app2YkfB5KfYfAOTr"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblmJIYKtJJwVbh8g",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/app2YkfB5KfYfAOTr/tblmJIYKtJJwVbh8g"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Applied": false,
+            "Title": "={{ $json.output.title }}",
+            "URL": "={{ $json.output.url }}",
+            "Score": "={{ $json.output.score }}",
+            "Priority": "={{ $json.output.priority }}",
+            "Reason": "={{ $json.output.reason }}",
+            "Time Job Created": "={{ $json.output.relativeDate }}",
+            "Proposal": "Hey! I can do this for you.",
+            "Description": "={{ $json.output.description }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Time Job Created",
+              "displayName": "Time Job Created",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Score",
+              "displayName": "Score",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Proposal",
+              "displayName": "Proposal",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Applied",
+              "displayName": "Applied",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        96
+      ],
+      "id": "6275b5a3-0e78-448d-954f-a6abe18d07b8",
+      "name": "Adding Records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "QhlczWzUVZxEe5cI",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/neatrat~upwork-job-scraper/run-sync-get-dataset-items?token=apify_api_YV7XB2SxoY7a8X1KShUYJBsR0okBy61vh3pD",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"n8n\",\n  \"maxJobAge\": {\n    \"value\": 6,\n    \"unit\": \"hours\"\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        80
+      ],
+      "id": "7d4002ac-880b-4fd3-92ed-9825c1340cb9",
+      "name": "Job Scraping",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "nfaksHsAFTetPqpp",
+          "name": "Bearer Auth account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dbd4dbbe-4f44-4db6-b155-534e848b13a9",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "1e6372fe-feb6-4f6b-bd21-5d78bf26b4b7",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "f487bf4c-eece-435e-8ac4-39028cb262fe",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "7d870236-fdbb-4382-bafd-9da2cfcd07aa",
+              "name": "relativeDate",
+              "value": "={{ $json.relativeDate }}",
+              "type": "string"
+            },
+            {
+              "id": "53be8665-16bb-42a0-8529-0f3ede70137e",
+              "name": "jobType",
+              "value": "={{ $json.jobType }}",
+              "type": "string"
+            },
+            {
+              "id": "f7d6d248-2193-4684-8406-5b112a145abf",
+              "name": "experienceLevel",
+              "value": "={{ $json.experienceLevel }}",
+              "type": "string"
+            },
+            {
+              "id": "0d08a144-9edf-4745-8489-4350976cb5f0",
+              "name": "Posted",
+              "value": "={{ $json.relativeDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        32
+      ],
+      "id": "6a302dd0-6d47-4f06-aa30-5d0d05a1fb59",
+      "name": "Data Filtering"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ADY0P1WBT",
+          "mode": "list",
+          "cachedResultName": "all-n8n-workflow-handler"
+        },
+        "text": "=The Upwork Automation workflow was interrupted due the following error \nPlease resolve the error to continue your workflow :- \n\n{{ $json[\"error \"] }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        400,
+        432
+      ],
+      "id": "2f43ef0f-3809-479c-aa4a-fb049dad6955",
+      "name": "Send error in Scarping",
+      "webhookId": "8100bbb6-fbe4-4fad-8e28-c0c293d3a2a6",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "bh9CSGAcHqSlQLRT",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ADY0P1WBT",
+          "mode": "list",
+          "cachedResultName": "all-n8n-workflow-handler"
+        },
+        "text": "=The Upwork Automation workflow was interrupted due the following error \nPlease resolve the error to continue your workflow :- \n\n{{ $json.Error }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1440,
+        -160
+      ],
+      "id": "7f30ed79-b03c-4546-869c-25031d24dbcb",
+      "name": "Send error in Agent",
+      "webhookId": "8100bbb6-fbe4-4fad-8e28-c0c293d3a2a6",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "bh9CSGAcHqSlQLRT",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ADY0P1WBT",
+          "mode": "list",
+          "cachedResultName": "all-n8n-workflow-handler"
+        },
+        "text": "=The Upwork Automation workflow was interrupted due the following error \nPlease resolve the error to continue your workflow :- \n\n{{ $json.error }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2256,
+        560
+      ],
+      "id": "2b1ffee2-dbd2-47d4-8335-4bd5159177ba",
+      "name": "Send error in gmail",
+      "webhookId": "8100bbb6-fbe4-4fad-8e28-c0c293d3a2a6",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "bh9CSGAcHqSlQLRT",
+          "name": "Slack account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dbd4dbbe-4f44-4db6-b155-534e848b13a9",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "1e6372fe-feb6-4f6b-bd21-5d78bf26b4b7",
+              "name": "description",
+              "value": "={{ $json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "f487bf4c-eece-435e-8ac4-39028cb262fe",
+              "name": "url",
+              "value": "={{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "7d870236-fdbb-4382-bafd-9da2cfcd07aa",
+              "name": "relativeDate",
+              "value": "={{ $json.relativeDate }}",
+              "type": "string"
+            },
+            {
+              "id": "53be8665-16bb-42a0-8529-0f3ede70137e",
+              "name": "jobType",
+              "value": "={{ $json.jobType }}",
+              "type": "string"
+            },
+            {
+              "id": "f7d6d248-2193-4684-8406-5b112a145abf",
+              "name": "experienceLevel",
+              "value": "={{ $json.experienceLevel }}",
+              "type": "string"
+            },
+            {
+              "id": "0d08a144-9edf-4745-8489-4350976cb5f0",
+              "name": "Posted",
+              "value": "={{ $json.relativeDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        144
+      ],
+      "id": "927a279b-1a96-46d2-98aa-4a9941ae034c",
+      "name": "Filtered_data"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        528
+      ],
+      "id": "b90e8393-f310-442c-ac04-04a31e3f6a05",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sEEgHjHsEljxuxHw",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-02-06T14:18:14.843-05:00",
+          "Readable date": "February 6th 2026, 2:18:14 pm",
+          "Readable time": "2:18:14 pm",
+          "Day of week": "Friday",
+          "Year": "2026",
+          "Month": "February",
+          "Day of month": "06",
+          "Hour": "14",
+          "Minute": "18",
+          "Second": "14",
+          "Timezone": "America/New_York (UTC-05:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Job Scraping": [
+      {
+        "json": {
+          "id": "2019860134629965256",
+          "subId": "~022019860134629965256",
+          "title": "Intelligent Workflow Automation Platform for SMBs",
+          "description": "We are building an intelligent platform for small and medium businesses that combines data-driven insights via AI with automated workflows using N8N. The goal is to streamline business operations without compromising performance or usability.\n\nResponsibilities:\n\nDevelop fullstack applications (React + Node.js) tailored to SMB needs.\n\nIntegrate machine learning modules to provide actionable insights.\n\nAutomate daily business workflows such as lead tracking, reporting, and notifications with N8N.\n\nCollaborate with product and design teams to enhance usability.\n\nEnsure robust logging, error handling, and deployment on cloud services.\n\nIdeal Candidate:\nYou are a problem solver who can bridge AI and automation with practical web development. Experience with SaaS platforms or business tools is a plus",
+          "url": "https://www.upwork.com/jobs/Intelligent-Workflow-Automation-Platform-for-SMBs_~022019860134629965256/?referrer_url_path=/nx/search/jobs/",
+          "budget": "20 - 40",
+          "relativeDate": "Posted 27 minutes ago",
+          "absoluteDate": "2026-02-06T19:45:58.178Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Intermediate",
+          "paymentVerified": true,
+          "tags": [
+            "n8n",
+            "Python",
+            "API Integration",
+            "React"
+          ],
+          "clientLocation": "Australia",
+          "clientHireRatePercent": 87,
+          "clientTotalSpent": 17113,
+          "clientRating": 4.97,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019858763734285768",
+          "subId": "~022019858763734285768",
+          "title": "n8n Automation Expert – Content & Carousel System",
+          "description": "I’m looking for someone to help me automate content creation end-to-end, mainly:\n\nSocial media carousels\n\nNewsletters\n\nThe design templates are already available in Figma.\nThe goal is to build a smart, scalable system (using n8n) that turns ideas/data into ready-to-publish content.\n\nWhat I’m looking for:\n\nStrong experience with n8n\n\nComfortable with content automation (social posts, newsletters)\n\nAble to design the automation system, not just execute tasks\n\nCollaborative mindset: we build the most efficient workflow together\n\nThis can turn into a long-term collaboration.\n\nPlease apply with:\n\nYour experience with n8n\n\nExamples of similar automations\n\nHow you’d approach this project (high level)\n\nPLEASE get back to me with : price per hour",
+          "url": "https://www.upwork.com/jobs/n8n-Automation-Expert-Content-Carousel-System_~022019858763734285768/?referrer_url_path=/nx/search/jobs/",
+          "budget": "5 - 15",
+          "relativeDate": "Posted 33 minutes ago",
+          "absoluteDate": "2026-02-06T19:40:31.336Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Intermediate",
+          "paymentVerified": true,
+          "tags": [
+            "n8n",
+            "Make.com",
+            "Business Process Automation"
+          ],
+          "clientLocation": "France",
+          "clientHireRatePercent": 47,
+          "clientTotalSpent": 5299,
+          "clientRating": 4.54,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019853792374612155",
+          "subId": "~022019853792374612155",
+          "title": "AI-Powered Web Application Development with Automation",
+          "description": "We are looking for a skilled developer to build a modern web application that leverages AI/ML algorithms for predictive analytics and automates workflows using n8n. The platform will follow a full-stack architecture with a responsive front end, secure back-end APIs, and a scalable database.\n\nThe selected professional will collaborate with our internal team to design, develop, and deploy a high-performance application focused on efficiency, reliability, and automation of repetitive processes.\n\nResponsibilities:\n\n- Develop a responsive web application with a modern front-end framework\n- Build and maintain secure back-end APIs\n- Integrate AI/ML models for analytics, predictions, or recommendations\n- Design and implement n8n workflows for automation tasks such as notifications, data processing, or third-party integrations\n- Ensure performance, scalability, and maintainability of the application\n- Assist with deployment and cloud configuration\n\nRequirements:\n\n- Experience with React, Angular, or Vue for front-end development\n- Experience with Node.js or Python for back-end development\n- Practical knowledge of AI/ML model integration with web applications\n- Hands-on experience with n8n or similar workflow automation tools\n- Experience with databases such as PostgreSQL, MongoDB, or MySQL\n- Familiarity with cloud deployment on AWS, GCP, or Azure\n- Ability to write clean, secure, and well-documented code",
+          "url": "https://www.upwork.com/jobs/Powered-Web-Application-Development-with-Automation_~022019853792374612155/?referrer_url_path=/nx/search/jobs/",
+          "budget": "25 - 45",
+          "relativeDate": "Posted 52 minutes ago",
+          "absoluteDate": "2026-02-06T19:20:46.105Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Intermediate",
+          "paymentVerified": true,
+          "tags": [
+            "AI Development",
+            "Full-Stack Development",
+            "Web Application",
+            "React",
+            "Node.js",
+            "Python",
+            "Artificial Intelligence"
+          ],
+          "clientLocation": "United States",
+          "clientHireRatePercent": 91,
+          "clientTotalSpent": 4091,
+          "clientRating": 5,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019847957854478523",
+          "subId": "~022019847957854478523",
+          "title": "Help me build a N8N flow",
+          "description": "I need you to build a N8N scenario\n\n- i will post a PDF to a n8n webhok\n- using a prompt with Claude I will need to extract data\n- structure data in a json array\n- and post the PDF with json array data to another webhook.",
+          "url": "https://www.upwork.com/jobs/Help-build-N8N-flow_~022019847957854478523/?referrer_url_path=/nx/search/jobs/",
+          "budget": "N/A",
+          "relativeDate": "Posted 1 hour ago",
+          "absoluteDate": "2026-02-06T18:57:35.049Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Expert",
+          "paymentVerified": true,
+          "tags": [
+            "n8n",
+            "Claude"
+          ],
+          "clientLocation": "Guadeloupe",
+          "clientHireRatePercent": 86,
+          "clientTotalSpent": 21549,
+          "clientRating": 5,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019785915931235227",
+          "subId": "~022019785915931235227",
+          "title": "n8n Automation Engineer (Long-term, Real systems)",
+          "description": "We’re looking for a strong n8n Automation Engineer to work inside our production system, building and improving real automations used by real users.\nThis is not a task-executor role.\nWe’re looking for someone who thinks in systems, understands data flows end-to-end, and can own automations, not just follow instructions.\nIf you enjoy debugging complex workflows, improving architecture, and proactively suggesting better solutions — keep reading.\n\n🧠What You’ll Do\nBuild, extend, and maintain n8n workflows inside our existing system\nWork with live webhooks, APIs, and external services\nDebug and fix broken or unreliable automations independently\nImprove data flow, error handling, and overall workflow robustness\nCollaborate with our team to design better automation logic\nSuggest improvements — technical and architectural\n\n✅ Must-Have Requirements\nStrong hands-on experience with n8n\nConfident working with:\nWebhooks\nREST APIs\nJSON & complex data mapping\nAuthentication (API keys, tokens, basic OAuth flows)\nProven ability to debug and fix workflows independently\nComfortable working inside an existing, imperfect system\nProactive mindset — you see problems and suggest solutions\nBased in Ukraine\n\n🤝 What We Offer\nReal-world automation challenges (not toy tasks)\nDirect collaboration with a technical team\nOpportunity for long-term cooperation\nAutonomy and trust — we care about outcomes, not micromanagement\nCompetitive pay based on skill and impact\n\nImportant:\nPlease start your message with the word SYSTEM so I know you read the job post.\nApplications without this will not be reviewed.",
+          "url": "https://www.upwork.com/jobs/n8n-Automation-Engineer-Long-term-Real-systems_~022019785915931235227/?referrer_url_path=/nx/search/jobs/",
+          "budget": "15 - 25",
+          "relativeDate": "Posted 2 hours ago",
+          "absoluteDate": "2026-02-06T14:51:03.122Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Expert",
+          "paymentVerified": true,
+          "tags": [
+            "n8n",
+            "Automation"
+          ],
+          "clientLocation": "Indonesia",
+          "clientHireRatePercent": 48,
+          "clientTotalSpent": 12694,
+          "clientRating": 5,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019790334943875847",
+          "subId": "~022019790334943875847",
+          "title": "n8n Automation Engineer – AI Dental Receptionist (Voice + PDF Quoting)",
+          "description": "I’m looking for an experienced automation engineer to build an AI-powered receptionist system for a dental clinic.\n\nThe system should handle inbound phone calls, converse naturally with callers, answer common questions, provide price estimates, book appointments, and automatically send a PDF quote to the caller’s phone — all without human intervention.\n\nThis is not a simple chatbot. It’s a real-time, voice-driven workflow with backend automation and guardrails.\n\nExpected Call Flow\n\nCustomer calls the dental clinic\n\nCall is routed via Twilio + Vapi to an AI receptionist\n\nAI receptionist:\n\nGreets the caller\n\nAnswers common dental questions (services, pricing, availability)\n\nCollects intent (quote request, appointment booking, etc.)\n\nIf the request exists in the knowledge base / database:\n\nFetch relevant service pricing\n\nGenerate a professional PDF quote using a predefined template\n\nSend the PDF to the same phone number via WhatsApp or SMS\n\nIf booking is requested:\n\nCollect required details\n\nStore appointment data in a database or calendar system\n\nEscalate gracefully if the request is out-of-scope or ambiguous\n\nCore Requirements\n\nBuild the entire workflow using n8n\n\nIntegrate Vapi for AI voice conversations\n\nUse Twilio for inbound/outbound call handling\n\nKnowledge base / database lookup logic\n\nDynamic PDF quote generation\n\nAutomatic PDF delivery via SMS or WhatsApp\n\nError handling and fallback flows\n\nClean, modular workflow design (easy to extend later)\n\nNice to Have\n\nExperience with healthcare or appointment-based systems\n\nPrompt engineering for voice agents\n\nHuman-in-the-loop or confidence scoring logic\n\nLogging and basic analytics (call outcomes, conversions)\n\nExperience optimizing AI cost and latency\n\nWhat I’m Looking For\n\nStrong experience with n8n (non-trivial workflows)\n\nHands-on experience with Twilio + Vapi\n\nComfortable designing voice-first AI systems\n\nCan think in flows, edge cases, and failure modes\n\nClear communicator who can explain architectural decisions\n\nYou will be asked these questions before applying.\n\nPlease include:\n\nRelevant projects using n8n + voice AI\n\nYour experience with Twilio and/or Vapi\n\nA brief explanation of how you would architect this system\n\nAny questions or assumptions you’d want to clarify",
+          "url": "https://www.upwork.com/jobs/n8n-Automation-Engineer-Dental-Receptionist-Voice-PDF-Quoting_~022019790334943875847/?referrer_url_path=/nx/search/jobs/",
+          "budget": "$450.00",
+          "relativeDate": "Posted 5 hours ago",
+          "absoluteDate": "2026-02-06T15:08:36.727Z",
+          "jobType": "Fixed",
+          "experienceLevel": "Expert",
+          "paymentVerified": false,
+          "tags": [
+            "n8n",
+            "Make.com",
+            "Zapier",
+            "API"
+          ],
+          "clientLocation": "India",
+          "clientHireRatePercent": 0,
+          "clientTotalSpent": 0,
+          "clientRating": 0,
+          "allowedApplicantCountries": null
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      },
+      {
+        "json": {
+          "id": "2019784240044467190",
+          "subId": "~022019784240044467190",
+          "title": "Full Stack Developer - AI Focused",
+          "description": "About Us\nWe run a growing affiliate lead generation business focused on several verticals. Our stack is built on automation, AI, and speed — and we need a developer who can keep up and grow with us. \nThis isn't a \"build it and forget it\" role. You'll be building new tools, maintaining and improving our existing systems, and helping shape customer-facing software from the ground up. We move fast, test constantly, and want someone who takes ownership.\n\nWhat You'll Be Working On\n* n8n Workflows: Building, maintaining, and optimizing complex automation workflows — this is core to how we operate\n* Front-End Development: Building user-facing tools and internal dashboards (React, Next.js, or similar)\n* AI/LLM Integration: Working with the Claude API, OpenAI, and other AI services to build intelligent features into our products\n* API Integrations: Connecting and managing services like LeadByte, Retell, Unbounce, and others across our lead gen stack\n* Backend & Data: Supabase, PostgreSQL, AWS (S3, Lambda, etc.) — keeping our data layer solid and scalable\n\nWhat We're Looking For\n* Strong n8n experience — you've built real, production-level workflows, not just tutorials\n* Full-stack capability — comfortable building both the front-end UI and the backend logic behind it\n* API-savvy — you can read docs, troubleshoot integrations, and connect systems without hand-holding\n* AI/LLM familiarity — experience building with Claude API, OpenAI, or similar. Bonus if you've used Claude Code or similar AI dev tools\n* Self-starter mentality — you can take a rough idea and turn it into a working product\n* Obsessively curious about AI — you genuinely enjoy spending hours learning new tools, testing new models, and staying on top of what's changing in the AI/automation space. This industry moves fast and we need someone who's excited by that, not overwhelmed by it\n* Growth mindset — you're not just looking for a job, you want to level up your skills alongside a growing business. We invest in the people who invest in themselves\n* Conversational English — enough to communicate clearly on calls and in async messages\n* Available during US business hours — real-time collaboration matters here\n\nNice to Have\n* Experience with lead generation, digital marketing, or performance marketing tech\n* Familiarity with Unbounce, LeadByte, Retell, or similar platforms\n* Experience building SaaS products or internal business tools\n* Comfort with Claude Code or AI-assisted development workflows\n\nWhy This Role\nThis is a long-term position with room to grow. You won't just be executing tickets — you'll have input on what we build and how we build it. If you're looking for a role where you can wear multiple hats, work on interesting AI-powered products, and grow alongside a business that's scaling, we want to hear from you.",
+          "url": "https://www.upwork.com/jobs/Full-Stack-Developer-Focused_~022019784240044467190/?referrer_url_path=/nx/search/jobs/",
+          "budget": "5 - 15",
+          "relativeDate": "Posted 5 hours ago",
+          "absoluteDate": "2026-02-06T14:44:23.566Z",
+          "jobType": "Hourly",
+          "experienceLevel": "Intermediate",
+          "paymentVerified": true,
+          "tags": [
+            "API",
+            "React",
+            "Node.js",
+            "API Integration",
+            "Python",
+            "JavaScript",
+            "CSS",
+            "Java",
+            "Web Development",
+            "HTML"
+          ],
+          "clientLocation": "United States",
+          "clientHireRatePercent": 70,
+          "clientTotalSpent": 35109,
+          "clientRating": 5,
+          "allowedApplicantCountries": [
+            "Argentina",
+            "Brazil",
+            "Chile",
+            "Colombia",
+            "Ecuador",
+            "El Salvador",
+            "Guatemala",
+            "Guyana",
+            "Mexico",
+            "Nicaragua",
+            "Paraguay",
+            "Peru",
+            "Uruguay",
+            "Venezuela"
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyse Job",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Analyse Job",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse Job": {
+      "main": [
+        [
+          {
+            "node": "Filter Priority",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Adding Records",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error in executing agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Job Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Error in executing mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Experience": {
+      "main": [
+        [
+          {
+            "node": "Filtered_data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Priority": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Job Scraping": {
+      "main": [
+        [
+          {
+            "node": "Data Filtering",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error in Scraping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Filtering": {
+      "main": [
+        [
+          {
+            "node": "Filter Experience",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error in Scraping": {
+      "main": [
+        [
+          {
+            "node": "Send error in Scarping",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error in executing agent": {
+      "main": [
+        [
+          {
+            "node": "Send error in Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error in executing mail": {
+      "main": [
+        [
+          {
+            "node": "Send error in gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtered_data": {
+      "main": [
+        [
+          {
+            "node": "Analyse Job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "853acba8-8e50-4fca-b798-f553596821f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "JWRDVbLMIF-gITAQP0acc",
+  "tags": []
+}
